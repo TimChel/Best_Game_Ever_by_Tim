@@ -66,6 +66,7 @@ hor_boarder = (1+x*otnosh)*width_line
 knot_flag = 0
 knot_list = []
 direction_list = []
+tablet_board = [[0, hor_boarder], [0, vert_boarder]]
 while running:
     clock.tick(FPS)
     mouse_pos = pygame.mouse.get_pos()
@@ -100,30 +101,18 @@ while running:
     # collisions = pygame.sprite.spritecollide(player, group_of_entites, False)
 
     screen.fill(GREEN)
-    pygame.draw.rect(screen, GREY, [0, 0, (1 + x*otnosh)*width_line, (1 + y*otnosh)*width_line])
+    pygame.draw.rect(screen, GREY, [0, 0, hor_boarder, vert_boarder])
     for i in range(x):
         for j in range(y):
             pygame.draw.rect(screen, BLACK, [(1 + i*otnosh)*width_line, (1 + j*otnosh)*width_line, width_line*(otnosh-1), width_line*(otnosh-1)])
-    # screen.blit(text, (WIDTH / 2 + 50, HEIGHT / 2 + 10))
     pygame.draw.circle(screen, GREY, [start_point_x, start_point_y], start_radius)
     pygame.draw.rect(screen, GREY, [end_point_x, end_point_y, width_line, width_line])
     pygame.draw.circle(screen, GREY, [end_point_x + width_line/2, end_point_y + width_line], width_line/2)
     if start == 1:
         pygame.draw.circle(screen, WHITE, [start_point_x, start_point_y], width_line)
-        # if (abs(mouse_pos[0] - knot[0]) <= abs(mouse_pos[1] - knot[1]) or mouse_pos[0] < 0 or mouse_pos[0] > hor_boarder) and mouse_pos[1] > 0 and mouse_pos[1] < vert_boarder:
-        #         if mouse_pos[1] - knot[1] > 0:
-        #             pygame.draw.rect(screen, WHITE, [knot[0]-width_line/2, knot[1], width_line, abs(mouse_pos[1] - knot[1])])
-        #         else:
-        #             pygame.draw.rect(screen, WHITE, [knot[0] - width_line/2, mouse_pos[1], width_line, abs(mouse_pos[1] - knot[1])])
-        # else:
-        #     if mouse_pos[0] > 0 and mouse_pos[0] < hor_boarder:
-        #         if mouse_pos[0] - knot[0] > 0:
-        #             pygame.draw.rect(screen, WHITE, [knot[0], knot[1] - width_line/2, abs(mouse_pos[0] - knot[0]), width_line])
-        #         else:
-        #             pygame.draw.rect(screen, WHITE, [mouse_pos[0], knot[1] - width_line/2, abs(mouse_pos[0] - knot[0]), width_line])
         if knot_flag == 1 and (abs(mouse_pos[0] - pos_0_x) >= width_line/2 or abs(mouse_pos[1] - pos_0_y) >= width_line/2):
             if abs(mouse_pos[0] - pos_0_x) <= abs(mouse_pos[1] - pos_0_y):
-                if mouse_pos[1] - pos_0_y < 0:
+                if mouse_pos[1] - pos_0_y < 0 and knot[1] + (mouse_pos[1] - pos_0_y) > tablet_board[1][0]:
                     if len(direction_list) != 0 and direction_list[-1] == 3:
                         del knot_list[-1]
                         del list_rect[-1]
@@ -134,7 +123,7 @@ while running:
                         direction_flag = 3
                     else:
                         direction_flag = 1
-                else:
+                elif mouse_pos[1] - pos_0_y > 0 and knot[1] + (mouse_pos[1] - pos_0_y) < tablet_board[1][1]:
                     if len(direction_list) != 0 and direction_list[-1] == 1:
                         del knot_list[-1]
                         del list_rect[-1]
@@ -145,8 +134,10 @@ while running:
                         direction_flag = 1
                     else:
                         direction_flag = 3
+                else:
+                    pos_0_x, pos_0_y = mouse_pos[0], mouse_pos[1]
             else:
-                if mouse_pos[0] - pos_0_x > 0:
+                if mouse_pos[0] - pos_0_x > 0 and knot[0] + (mouse_pos[0] - pos_0_x) < tablet_board[0][1]:
                     if len(direction_list) != 0 and direction_list[-1] == 4:
                         del knot_list[-1]
                         del list_rect[-1]
@@ -157,7 +148,7 @@ while running:
                         direction_flag = 4
                     else:
                         direction_flag = 2
-                else:
+                elif mouse_pos[0] - pos_0_x < 0 and knot[0] + (mouse_pos[0] - pos_0_x) > tablet_board[0][0]:
                     if len(direction_list) != 0 and direction_list[-1] == 2:
                         del knot_list[-1]
                         del list_rect[-1]
@@ -168,14 +159,19 @@ while running:
                         direction_flag = 2
                     else:
                         direction_flag = 4
+                else:
+                    pos_0_x, pos_0_y = mouse_pos[0], mouse_pos[1]
             knot_flag = 0
-            print(knot_list)
 
         if knot_flag == 0:
             if direction_flag == 1:
-                pygame.draw.rect(screen, WHITE, [knot[0] - width_line / 2, knot[1]-(pos_0_y-mouse_pos[1]), width_line,  pos_0_y - mouse_pos[1]])
-                pygame.draw.circle(screen, WHITE, [knot[0], knot[1]-(pos_0_y-mouse_pos[1])], width_line/2)
-                if pos_0_y - mouse_pos[1] > (otnosh - 1/2)*width_line:
+                if [knot[0], knot[1]-otnosh*width_line] in knot_list and pos_0_y - mouse_pos[1] > (otnosh -3/2)*width_line:
+                    pos_0_y = mouse_pos[1] + (otnosh - 3/2)*width_line
+                pygame.draw.rect(screen, WHITE,
+                                     [knot[0] - width_line / 2, knot[1] - (pos_0_y - mouse_pos[1]), width_line,
+                                     pos_0_y - mouse_pos[1]])
+                pygame.draw.circle(screen, WHITE, [knot[0], knot[1] - (pos_0_y - mouse_pos[1])], width_line / 2)
+                if pos_0_y - mouse_pos[1] > (otnosh - 1/2)*width_line and [knot[0], knot[1]-otnosh*width_line] not in knot_list:
                     list_rect.append([knot[0] - width_line / 2, knot[1]-otnosh*width_line, width_line,  otnosh*width_line])
                     list_circle.append([knot[0], knot[1]-otnosh*width_line])
                     direction_list.append(direction_flag)
@@ -188,6 +184,8 @@ while running:
                     knot_flag = 1
                     pos_0_x = mouse_pos[0]
             elif direction_flag == 2:
+                if [knot[0]+otnosh*width_line, knot[1]] in knot_list and -pos_0_x + mouse_pos[0] > (otnosh -3/2)*width_line:
+                    pos_0_x = mouse_pos[0] - (otnosh - 3/2)*width_line
                 pygame.draw.rect(screen, WHITE,
                                  [knot[0], knot[1] - width_line / 2, mouse_pos[0] - pos_0_x, width_line])
                 pygame.draw.circle(screen, WHITE, [knot[0] + mouse_pos[0] - pos_0_x, knot[1]], width_line / 2)
@@ -204,6 +202,8 @@ while running:
                     knot_flag = 1
                     pos_0_y = mouse_pos[1]
             elif direction_flag == 3:
+                if [knot[0], knot[1]+otnosh*width_line] in knot_list and -pos_0_y + mouse_pos[1] > (otnosh -3/2)*width_line:
+                    pos_0_y = mouse_pos[1] - (otnosh - 3/2)*width_line
                 pygame.draw.rect(screen, WHITE,
                                  [knot[0] - width_line / 2, knot[1], width_line, mouse_pos[1] - pos_0_y])
                 pygame.draw.circle(screen, WHITE, [knot[0], knot[1] + (-pos_0_y + mouse_pos[1])], width_line / 2)
@@ -220,6 +220,8 @@ while running:
                     knot_flag = 1
                     pos_0_x = mouse_pos[0]
             elif direction_flag == 4:
+                if [knot[0]-otnosh*width_line, knot[1]] in knot_list and pos_0_x - mouse_pos[0] > (otnosh -3/2)*width_line:
+                    pos_0_x = mouse_pos[0] + (otnosh - 3/2)*width_line
                 pygame.draw.rect(screen, WHITE,
                                  [knot[0] - (pos_0_x - mouse_pos[0]), knot[1] - width_line / 2, pos_0_x - mouse_pos[0], width_line])
                 pygame.draw.circle(screen, WHITE, [knot[0] - (-mouse_pos[0] + pos_0_x), knot[1]], width_line / 2)
