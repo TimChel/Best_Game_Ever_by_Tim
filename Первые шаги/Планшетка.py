@@ -63,6 +63,9 @@ circle1 = 0
 circle2 = 0
 flag_decline = 0
 
+list_circle = []
+list_rect = []
+
 while running:
     clock.tick(FPS)
     mouse_pos = pygame.mouse.get_pos()
@@ -424,8 +427,10 @@ while running:
             pygame.draw.rect(screen, current_color, rect)
         if circle2 != 0:
             pygame.draw.circle(screen, current_color, *circle2)
-        pygame.draw.circle(screen, current_color, *circle1)
-        pygame.draw.circle(screen, current_color, knot_list[0], width_line)
+        if circle1 != 0:
+            pygame.draw.circle(screen, current_color, *circle1)
+        if len(knot_list) != 0:
+            pygame.draw.circle(screen, current_color, knot_list[0], width_line)
 
     pygame.display.flip()
 
