@@ -10,7 +10,7 @@ GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 WHITE_minor = (180, 180, 180)
 
-base_color = WHITE
+base_color = GREY
 next_color = GREEN
 current_color = base_color
 change_every_x_seconds = 1/3
@@ -96,6 +96,9 @@ while running:
                     current_color = base_color
                     flag_decline = 0
                     step = 0
+                    rect = 0
+                    circle1 = 0
+                    circle2 = 0
 
         if event.type == pygame.MOUSEBUTTONUP:
             start = 0
@@ -220,8 +223,6 @@ while running:
             if abs(mouse_pos[0] - pos_0_x) <= abs(mouse_pos[1] - pos_0_y) and \
                     ((knot[1] + (mouse_pos[1] - pos_0_y) > tablet_board[1][0] + width_line/2  or [1, *knot] in end_point_list) and \
                      (knot[1] + (mouse_pos[1] - pos_0_y) < tablet_board[1][1] - width_line/2) or [3, *knot] in end_point_list):
-                pygame.draw.circle(screen, current_color, [knot[0], knot[1] - (pos_0_y - mouse_pos[1])], width_line / 2)
-                pygame.draw.circle(screen, current_color, [knot[0], knot[1] - (pos_0_y - mouse_pos[1])/2], width_line / 2)
 
                 circle1 = [knot[0], knot[1] - (pos_0_y - mouse_pos[1])], width_line / 2
                 circle2 = [knot[0], knot[1] - (pos_0_y - mouse_pos[1])/2], width_line / 2
@@ -229,8 +230,6 @@ while running:
             elif abs(mouse_pos[0] - pos_0_x) >= abs(mouse_pos[1] - pos_0_y) and\
                     (knot[0] + (mouse_pos[0] - pos_0_x) < tablet_board[0][1] - width_line/2 or [2, *knot] in end_point_list) and \
                     (knot[0] + (mouse_pos[0] - pos_0_x) > tablet_board[0][0] + width_line/2 or [4, *knot] in end_point_list):
-                pygame.draw.circle(screen, current_color, [knot[0] + mouse_pos[0] - pos_0_x, knot[1]], width_line / 2)
-                pygame.draw.circle(screen, current_color, [knot[0] + (mouse_pos[0] - pos_0_x)/2, knot[1]], width_line / 2)
 
                 circle1 = [knot[0] + mouse_pos[0] - pos_0_x, knot[1]], width_line / 2
                 circle2 = [knot[0] + (mouse_pos[0] - pos_0_x)/2, knot[1]], width_line / 2
@@ -248,11 +247,6 @@ while running:
                     flag_end = 1
                 else:
                     flag_end = 0
-
-                pygame.draw.rect(screen, current_color,
-                                     [knot[0] - width_line / 2, knot[1] - (pos_0_y - mouse_pos[1]), width_line,
-                                     pos_0_y - mouse_pos[1]])
-                pygame.draw.circle(screen, current_color, [knot[0], knot[1] - (pos_0_y - mouse_pos[1])], width_line / 2)
 
                 rect = [knot[0] - width_line / 2, knot[1] - (pos_0_y - mouse_pos[1]), width_line, pos_0_y - mouse_pos[1]]
                 circle1 = [knot[0], knot[1] - (pos_0_y - mouse_pos[1])], width_line / 2
@@ -288,10 +282,6 @@ while running:
                 else:
                     flag_end = 0
 
-                pygame.draw.rect(screen, current_color,
-                                 [knot[0], knot[1] - width_line / 2, mouse_pos[0] - pos_0_x, width_line])
-                pygame.draw.circle(screen, current_color, [knot[0] + mouse_pos[0] - pos_0_x, knot[1]], width_line / 2)
-
                 rect = [knot[0], knot[1] - width_line / 2, mouse_pos[0] - pos_0_x, width_line]
                 circle1 = [knot[0] + mouse_pos[0] - pos_0_x, knot[1]], width_line / 2
 
@@ -326,10 +316,6 @@ while running:
                 else:
                     flag_end = 0
 
-                pygame.draw.rect(screen, current_color,
-                                 [knot[0] - width_line / 2, knot[1], width_line, mouse_pos[1] - pos_0_y])
-                pygame.draw.circle(screen, current_color, [knot[0], knot[1] + (-pos_0_y + mouse_pos[1])], width_line / 2)
-
                 rect = [knot[0] - width_line / 2, knot[1], width_line, mouse_pos[1] - pos_0_y]
                 circle1 = [knot[0], knot[1] + (-pos_0_y + mouse_pos[1])], width_line / 2
 
@@ -363,10 +349,6 @@ while running:
                     flag_end = 1
                 else:
                     flag_end = 0
-
-                pygame.draw.rect(screen, current_color,
-                                 [knot[0] - (pos_0_x - mouse_pos[0]), knot[1] - width_line / 2, pos_0_x - mouse_pos[0], width_line])
-                pygame.draw.circle(screen, current_color, [knot[0] - (-mouse_pos[0] + pos_0_x), knot[1]], width_line / 2)
 
                 rect = [knot[0] - (pos_0_x - mouse_pos[0]), knot[1] - width_line / 2, pos_0_x - mouse_pos[0], width_line]
                 circle1 = [knot[0] - (-mouse_pos[0] + pos_0_x), knot[1]], width_line / 2
@@ -406,31 +388,32 @@ while running:
         else:
             step = 1
             base_color, next_color = next_color, base_color
-    elif flag_decline == 0:
+    elif start == 1:
         base_color = WHITE
         next_color = GREEN
         current_color = base_color
 
     if flag_end == 0 and start == 0 and flag_decline == 1:
         step += 1
-        if step <= number_of_steps1 :
+        if step <= number_of_steps1:
             current_color = [x + (((y - x) / number_of_steps1) * step) for x, y in
                              zip(pygame.color.Color(base_color), pygame.color.Color(GREY))]
         else:
             flag_decline = 0
-        for i in list_rect:
-            pygame.draw.rect(screen, current_color, i)
 
-        for i in list_circle:
-            pygame.draw.circle(screen, current_color, i, width_line/2)
-        if rect != 0:
-            pygame.draw.rect(screen, current_color, rect)
-        if circle2 != 0:
-            pygame.draw.circle(screen, current_color, *circle2)
-        if circle1 != 0:
-            pygame.draw.circle(screen, current_color, *circle1)
-        if len(knot_list) != 0:
-            pygame.draw.circle(screen, current_color, knot_list[0], width_line)
+    for i in list_rect:
+        pygame.draw.rect(screen, current_color, i)
+    for i in list_circle:
+        pygame.draw.circle(screen, current_color, i, width_line / 2)
+    if rect != 0:
+        pygame.draw.rect(screen, current_color, rect)
+    if circle2 != 0:
+        pygame.draw.circle(screen, current_color, *circle2)
+    if circle1 != 0:
+        pygame.draw.circle(screen, current_color, *circle1)
+    if len(knot_list) != 0:
+        pygame.draw.circle(screen, current_color, knot_list[0], width_line)
+
 
     pygame.display.flip()
 
