@@ -66,6 +66,33 @@ flag_decline = 0
 list_circle = []
 list_rect = []
 
+end_point_draw = [[],[]]
+for end_point in end_point_list:
+    if end_point[0] == 1:
+        end_point_draw[0].append([end_point[1] - width_line / 2, end_point[2] - width_line, width_line,
+                                        3 / 2 * width_line])
+        end_point_draw[1].append([[end_point[1], end_point[2] - width_line], width_line / 2])
+    elif end_point[0] == 2:
+        end_point_draw[0].append([end_point[1] - width_line / 2, end_point[2] - width_line / 2, 3 / 2 * width_line,
+                          width_line])
+        end_point_draw[1].append([[end_point[1] + width_line, end_point[2]], width_line / 2])
+    elif end_point[0] == 3:
+        end_point_draw[0].append([end_point[1] - width_line / 2, end_point[2] - width_line / 2, width_line,
+                                        3 / 2 * width_line])
+        end_point_draw[1].append([[end_point[1], end_point[2] + width_line], width_line / 2])
+    elif end_point[0] == 4:
+        end_point_draw[0].append([end_point[1] - width_line, end_point[2] - width_line / 2, 3 / 2 * width_line,
+                          width_line])
+        end_point_draw[1].append([[end_point[1] - width_line, end_point[2]], width_line / 2])
+
+crack_point_draw = []
+for crack_point in crack_point_list:
+    if crack_point[0] == 3:
+        crack_point_draw.append([crack_point[1]-width_line/2, crack_point[2] + otnosh*width_line/2 - width_line/4, width_line, width_line/2])
+    if crack_point[0] == 2:
+        crack_point_draw.append([crack_point[1] + otnosh*width_line/2 - width_line/4, crack_point[2] - width_line/2, width_line/2, width_line])
+
+
 while running:
     clock.tick(FPS)
     mouse_pos = pygame.mouse.get_pos()
@@ -73,8 +100,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        # if event.type == pygame.KEYUP:
-        #     if event.key == pygame.K_SPACE:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             for start_point in start_point_list:
@@ -115,32 +140,12 @@ while running:
             pygame.draw.rect(screen, BLACK, [(1 + i*otnosh)*width_line + nachalo_x, (1 + j*otnosh)*width_line + nachalo_y, width_line*(otnosh-1), width_line*(otnosh-1)])
     for start_point in start_point_list:
         pygame.draw.circle(screen, GREY, [start_point[0], start_point[1]], start_radius)
-    for end_point in end_point_list:
-        if end_point[0] == 1:
-            pygame.draw.rect(screen, GREY, [end_point[1] - width_line / 2, end_point[2] - width_line, width_line,
-                                            3 / 2 * width_line])
-            pygame.draw.circle(screen, GREY,
-                               [end_point[1], end_point[2] - width_line], width_line / 2)
-        elif end_point[0] == 2:
-            pygame.draw.rect(screen, GREY, [end_point[1] - width_line / 2, end_point[2] - width_line/2, 3/2*width_line,
-                                            width_line])
-            pygame.draw.circle(screen, GREY,
-                               [end_point[1] + width_line, end_point[2]], width_line / 2)
-        elif end_point[0] == 3:
-            pygame.draw.rect(screen, GREY, [end_point[1] - width_line / 2, end_point[2] - width_line / 2, width_line,
-                                            3 / 2 * width_line])
-            pygame.draw.circle(screen, GREY, [end_point[1], end_point[2] + width_line], width_line / 2)
-        elif end_point[0] == 4:
-            pygame.draw.rect(screen, GREY,
-                             [end_point[1] - width_line, end_point[2] - width_line / 2, 3 / 2 * width_line,
-                              width_line])
-            pygame.draw.circle(screen, GREY,
-                               [end_point[1] - width_line, end_point[2]], width_line / 2)
-    for crack_point in crack_point_list:
-        if crack_point[0] == 3:
-            pygame.draw.rect(screen, BLACK, [crack_point[1]-width_line/2, crack_point[2] + otnosh*width_line/2 - width_line/4, width_line, width_line/2])
-        if crack_point[0] == 2:
-            pygame.draw.rect(screen, BLACK, [crack_point[1] + otnosh*width_line/2 - width_line/4, crack_point[2] - width_line/2, width_line/2, width_line])
+    for end_point in end_point_draw[0]:
+        pygame.draw.rect(screen, GREY, end_point)
+    for end_point in end_point_draw[1]:
+        pygame.draw.circle(screen, GREY, *end_point)
+    for crack_point in crack_point_draw:
+        pygame.draw.rect(screen, BLACK, crack_point)
 
     if start == 1:
         pygame.draw.circle(screen, current_color, knot_list[0], width_line)
@@ -359,9 +364,6 @@ while running:
     if flag_end == 1 and start == 1:
         step += 1
         if step < number_of_steps:
-            # (y-x)/number_of_steps calculates the amount of change per step required to
-            # fade one channel of the old color to the new color
-            # We multiply it with the current step counter
             current_color = [x + (((y - x) / number_of_steps) * step) for x, y in
                              zip(pygame.color.Color(base_color), pygame.color.Color(next_color))]
         else:
