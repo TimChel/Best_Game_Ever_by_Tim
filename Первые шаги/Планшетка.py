@@ -154,12 +154,10 @@ while running:
                         knot = [knot_list[-1][0], knot_list[-1][1]]
                         pos_0_y = pos_0_y - otnosh*width_line
                         direction_flag = 3
-
                         circle2 = 0
 
                     else:
                         direction_flag = 1
-
                         circle2 = 0
 
                 elif mouse_pos[1] - pos_0_y > 0 and (knot[1] + (mouse_pos[1] - pos_0_y) < tablet_board[1][1] or [3, *knot] in end_point_list):
@@ -171,12 +169,10 @@ while running:
                         knot = [knot_list[-1][0], knot_list[-1][1]]
                         pos_0_y = pos_0_y + otnosh * width_line
                         direction_flag = 1
-
                         circle2 = 0
 
                     else:
                         direction_flag = 3
-
                         circle2 = 0
 
                 else:
@@ -191,12 +187,10 @@ while running:
                         knot = [knot_list[-1][0], knot_list[-1][1]]
                         pos_0_x = pos_0_x + otnosh * width_line
                         direction_flag = 4
-
                         circle2 = 0
 
                     else:
                         direction_flag = 2
-
                         circle2 = 0
 
                 elif mouse_pos[0] - pos_0_x < 0 and (knot[0] + (mouse_pos[0] - pos_0_x) > tablet_board[0][0] or [4, *knot] in end_point_list):
@@ -208,12 +202,10 @@ while running:
                         knot = [knot_list[-1][0], knot_list[-1][1]]
                         pos_0_x = pos_0_x - otnosh * width_line
                         direction_flag = 2
-
                         circle2 = 0
 
                     else:
                         direction_flag = 4
-
                         circle2 = 0
 
                 else:
@@ -260,13 +252,11 @@ while running:
                     pos_0_y = mouse_pos[1]
                     pos_0_x = mouse_pos[0]
                     knot_list.append([knot[0], knot[1]])
-
                     rect = 0
 
                 elif pos_0_y - mouse_pos[1] < width_line/2:
                     knot_flag = 1
                     pos_0_x = mouse_pos[0]
-
                     rect = 0
 
             elif direction_flag == 2:
@@ -299,9 +289,7 @@ while running:
                 elif - pos_0_x + mouse_pos[0] < width_line/2:
                     knot_flag = 1
                     pos_0_y = mouse_pos[1]
-
                     rect = 0
-
 
             elif direction_flag == 3:
                 if [knot[0], knot[1]+otnosh*width_line] in knot_list and -pos_0_y + mouse_pos[1] > (otnosh -3/2)*width_line:
@@ -328,13 +316,11 @@ while running:
                     pos_0_y = mouse_pos[1]
                     pos_0_x = mouse_pos[0]
                     knot_list.append([knot[0], knot[1]])
-
                     rect = 0
 
                 elif - pos_0_y + mouse_pos[1] < width_line/2:
                     knot_flag = 1
                     pos_0_x = mouse_pos[0]
-
                     rect = 0
 
             elif direction_flag == 4:
@@ -362,20 +348,12 @@ while running:
                     pos_0_y = mouse_pos[1]
                     pos_0_x = mouse_pos[0]
                     knot_list.append([knot[0], knot[1]])
-
                     rect = 0
 
                 elif pos_0_x - mouse_pos[0] < width_line/2:
                     knot_flag = 1
                     pos_0_y = mouse_pos[1]
-
                     rect = 0
-
-        for i in list_rect:
-            pygame.draw.rect(screen, current_color, i)
-
-        for i in list_circle:
-            pygame.draw.circle(screen, current_color, i, width_line/2)
 
     if flag_end == 1 and start == 1:
         step += 1
@@ -413,7 +391,6 @@ while running:
         pygame.draw.circle(screen, current_color, *circle1)
     if len(knot_list) != 0:
         pygame.draw.circle(screen, current_color, knot_list[0], width_line)
-
 
     pygame.display.flip()
 
