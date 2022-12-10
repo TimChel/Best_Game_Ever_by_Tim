@@ -131,7 +131,6 @@ while running:
             flag_decline = 1
             if flag_end == 1:
                 print("Win")
-                current_color = WHITE
 
     screen.fill(BLACK)
     pygame.draw.rect(screen, GREY, [nachalo_x, nachalo_y, hor_boarder, vert_boarder], border_radius=width_line//2)
@@ -363,7 +362,7 @@ while running:
 
     if flag_end == 1 and start == 1:
         step += 1
-        if step < number_of_steps:
+        if step <= number_of_steps:
             current_color = [x + (((y - x) / number_of_steps) * step) for x, y in
                              zip(pygame.color.Color(base_color), pygame.color.Color(next_color))]
         else:
@@ -373,6 +372,16 @@ while running:
         base_color = WHITE
         next_color = GREEN
         current_color = base_color
+    elif flag_decline == 1 and flag_end == 1:
+        step += 1
+        if step <= number_of_steps:
+            current_color = [x + (((y - x) / number_of_steps) * step) for x, y in
+                             zip(pygame.color.Color(base_color), pygame.color.Color(next_color))]
+        else:
+            step = 1
+            base_color, next_color = next_color, base_color
+            if base_color == WHITE:
+                flag_decline = 0
 
     if flag_end == 0 and start == 0 and flag_decline == 1:
         step += 1
