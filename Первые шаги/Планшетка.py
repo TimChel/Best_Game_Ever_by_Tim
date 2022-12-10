@@ -106,6 +106,7 @@ while running:
             flag_decline = 1
             if flag_end == 1:
                 print("Win")
+                current_color = WHITE
 
     screen.fill(BLACK)
     pygame.draw.rect(screen, GREY, [nachalo_x, nachalo_y, hor_boarder, vert_boarder], border_radius=width_line//2)
