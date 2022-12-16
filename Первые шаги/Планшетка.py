@@ -1,7 +1,9 @@
 import pygame
 
 pygame.mixer.init()
-Sound_1 = pygame.mixer.Sound("A Sky Full Of Stars.mp3")
+tracing_step = 0
+tracing_timer = 600
+tracing_circle = 0
 
 WIDTH = 600
 HEIGHT = 500
@@ -105,36 +107,37 @@ while running:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            for start_point in start_point_list:
-                if ((mouse_pos[0] - start_point[0]) ** 2 + (mouse_pos[1] - start_point[1]) ** 2) ** (
-                        1 / 2) <= start_radius and start == 0:
-                    start = 1
-                    knot = [start_point[0], start_point[1]]
-                    pos_0_x = mouse_pos[0]
-                    pos_0_y = mouse_pos[1]
-                    knot_flag = 1
-                    direction_flag = -1
-                    list_rect = []
-                    list_circle = []
-                    direction_list = []
-                    knot_list = [[knot[0], knot[1]]]
-                    flag_end = 0
-                    base_color = WHITE
-                    next_color = GREEN
-                    current_color = base_color
-                    flag_decline = 0
-                    step = 0
-                    rect = 0
-                    circle1 = 0
-                    circle2 = 0
-                    Sound_1.play()
+            if start == 0:
+                for start_point in start_point_list:
+                    if ((mouse_pos[0] - start_point[0]) ** 2 + (mouse_pos[1] - start_point[1]) ** 2) ** (
+                            1 / 2) <= start_radius and start == 0:
+                        start = 1
+                        knot = [start_point[0], start_point[1]]
+                        pos_0_x = mouse_pos[0]
+                        pos_0_y = mouse_pos[1]
+                        knot_flag = 1
+                        direction_flag = -1
+                        list_rect = []
+                        list_circle = []
+                        direction_list = []
+                        knot_list = [[knot[0], knot[1]]]
+                        flag_end = 0
+                        base_color = WHITE
+                        next_color = GREEN
+                        current_color = base_color
+                        flag_decline = 0
+                        step = 0
+                        rect = 0
+                        circle1 = 0
+                        circle2 = 0
+                        pygame.mixer.Sound("panel_success_muted-fix.ogg").play()
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            start = 0
-            knot_flag = 0
-            flag_decline = 1
-            if flag_end == 1:
-                print("Win")
+            else:
+                start = 0
+                knot_flag = 0
+                flag_decline = 1
+                if flag_end == 1:
+                    print("Win")
 
     screen.fill(BLACK)
     pygame.draw.rect(screen, GREY, [nachalo_x, nachalo_y, hor_boarder, vert_boarder], border_radius=width_line//2)
@@ -364,6 +367,9 @@ while running:
                     pos_0_y = mouse_pos[1]
                     rect = 0
 
+    #таймер на трайсинг
+
+
     if flag_end == 1 and start == 1:
         step += 1
         if step <= number_of_steps:
@@ -376,6 +382,18 @@ while running:
         base_color = WHITE
         next_color = GREEN
         current_color = base_color
+        tracing_step += 1
+        if tracing_timer <= tracing_step:
+            tracing_circle = 1
+            tracing_step = 0
+            pygame.mixer.Sound("panel_finish_tracing-fix.ogg").play()
+        for end_tracing in end_point_draw[1]:
+            if tracing_circle == 1 and tracing_step < 200:
+                pygame.draw.circle(screen, WHITE, end_tracing[0], tracing_step // 10, width=1)
+            if tracing_circle == 1 and 40 < tracing_step < 240:
+                pygame.draw.circle(screen, WHITE, end_tracing[0], (tracing_step - 40) // 10, width=1)
+            if tracing_circle == 1 and 80 < tracing_step < 280:
+                pygame.draw.circle(screen, WHITE, end_tracing[0], (tracing_step - 80) // 10, width=1)
     elif flag_decline == 1 and flag_end == 1:
         step += 1
         if step <= number_of_steps:
@@ -407,6 +425,20 @@ while running:
         pygame.draw.circle(screen, current_color, *circle1)
     if len(knot_list) != 0:
         pygame.draw.circle(screen, current_color, knot_list[0], width_line)
+
+    if flag_end == 0 and start == 0:
+        tracing_step += 1
+        if tracing_timer <= tracing_step:
+            tracing_circle = 1
+            tracing_step = 0
+            pygame.mixer.Sound("panel_start_tracing-fix.ogg").play()
+        for start_tracing in start_point_list:
+            if tracing_circle == 1 and tracing_step < 200:
+                pygame.draw.circle(screen, WHITE, start_tracing, tracing_step//5, width=1)
+            if tracing_circle == 1 and 40 < tracing_step < 240:
+                pygame.draw.circle(screen, WHITE, start_tracing, (tracing_step-40) // 5, width=1)
+            if tracing_circle == 1 and 80 < tracing_step < 280:
+                pygame.draw.circle(screen, WHITE, start_tracing, (tracing_step-80) // 5, width=1)
 
     pygame.display.flip()
 
