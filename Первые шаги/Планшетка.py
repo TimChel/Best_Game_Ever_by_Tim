@@ -1,5 +1,8 @@
 import pygame
 
+pygame.mixer.init()
+Sound_1 = pygame.mixer.Sound("A Sky Full Of Stars.mp3")
+
 WIDTH = 600
 HEIGHT = 500
 FPS = 200
@@ -124,6 +127,7 @@ while running:
                     rect = 0
                     circle1 = 0
                     circle2 = 0
+                    Sound_1.play()
 
         if event.type == pygame.MOUSEBUTTONUP:
             start = 0
