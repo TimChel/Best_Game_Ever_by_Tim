@@ -130,7 +130,7 @@ while running:
                         rect = 0
                         circle1 = 0
                         circle2 = 0
-                        pygame.mixer.Sound("panel_success_muted-fix.ogg").play()
+                        # pygame.mixer.Sound("panel_success_muted-fix.ogg").play()
 
             else:
                 start = 0
@@ -392,8 +392,6 @@ while running:
                 pygame.draw.circle(screen, WHITE, end_tracing[0], tracing_step // 10, width=1)
             if tracing_circle == 1 and 40 < tracing_step < 240:
                 pygame.draw.circle(screen, WHITE, end_tracing[0], (tracing_step - 40) // 10, width=1)
-            if tracing_circle == 1 and 80 < tracing_step < 280:
-                pygame.draw.circle(screen, WHITE, end_tracing[0], (tracing_step - 80) // 10, width=1)
     elif flag_decline == 1 and flag_end == 1:
         step += 1
         if step <= number_of_steps:
