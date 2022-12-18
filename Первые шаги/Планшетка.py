@@ -27,6 +27,7 @@ class Tablet():
         self.GREEN = (0, 255, 0)
         self.WHITE = (255, 255, 255)
         self.WHITE_minor = (180, 180, 180)
+        self.BASE = (13, 10, 168)
 
         self.base_color = self.GREY
         self.next_color = self.GREEN
@@ -54,7 +55,7 @@ class Tablet():
         self.knot_list = []
         self.direction_list = []
         self.tablet_board = [(self.nachalo_x, self.nachalo_x + self.hor_boarder), [self.nachalo_y, self.nachalo_y + self.vert_boarder]]
-        self.start_list = [[1, 1], [2, 2]]
+        self.start_list = [[1, 1], [0, 0]]
         self.start_point_list = []
         for i, j in self.start_list:
             self.start_point_list.append(
@@ -64,7 +65,8 @@ class Tablet():
         for i, j, k in self.end_list:
             self.end_point_list.append(
                 [i, (1 / 2 + j * self.otnosh) * self.width_line + self.nachalo_x, (1 / 2 + k * self.otnosh) * self.width_line + self.nachalo_y])
-        self.crack_list = [[2, 0, 0], [3, 0, 0], [2, 1, 1], [3, 1, 1]]
+        # self.crack_list = [[2, 0, 0], [3, 0, 0]]
+        self.crack_list = []
         self.crack_point_list = []
         for i, j, k in self.crack_list:
             self.crack_point_list.append(
@@ -86,6 +88,11 @@ class Tablet():
                     self.point_required_chek.append([self.point_required_point_list[-1][2:4], [self.point_required_point_list[-1][2]+self.otnosh*self.width_line, self.point_required_point_list[-1][3]]])
                 else:
                     self.point_required_chek.append([self.point_required_point_list[-1][2:4], [self.point_required_point_list[-1][2], self.point_required_point_list[-1][3] +self.otnosh*self.width_line]])
+        self.square_list = [[0, 1, 1], [1, 2, 2]]
+        self.square_point_list = []
+        for i in self.square_list:
+            self.square_point_list.append([i[0], (1 / 2 + i[1] * self.otnosh) * self.width_line + self.nachalo_x,
+                     (1 / 2 + i[2] * self.otnosh) * self.width_line + self.nachalo_y])
 
         self.rect = 0
         self.circle1 = 0
@@ -141,6 +148,16 @@ class Tablet():
                 self.point_required_draw.append(
                     [point_required[1], point_required[2]])
 
+        self.square_draw = []
+        self.square_chek = []
+        for i in self.square_point_list:
+            if i[0] == 0:
+                self.square_draw.append([self.BLACK, i[1] +1/2*self.otnosh*self.width_line - self.width_line//2, i[2] +1/2*self.otnosh*self.width_line - self.width_line//2,
+                                         self.width_line, self.width_line])
+            elif i[0] == 1:
+                self.square_draw.append([self.WHITE, i[1] +1/2*self.otnosh*self.width_line - self.width_line//2, i[2] +1/2*self.otnosh*self.width_line - self.width_line//2,
+                                         self.width_line, self.width_line])
+
     def update_event(self, event, mouse_pos):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.start == 0:
@@ -171,7 +188,8 @@ class Tablet():
 
 
             else:
-                self.chek()
+                self.chek_point_required()
+                self.chek_square()
                 self.start = 0
                 self.knot_flag = 0
                 self.flag_decline = 1
@@ -187,11 +205,11 @@ class Tablet():
 
 
     def update(self, mouse_pos):
-        screen.fill(self.BLACK)
+        screen.fill(self.BASE)
         pygame.draw.rect(screen, self.GREY, [self.nachalo_x, self.nachalo_y, self.hor_boarder, self.vert_boarder], border_radius=self.width_line // 2)
         for i in range(self.x):
             for j in range(self.y):
-                pygame.draw.rect(screen, self.BLACK,
+                pygame.draw.rect(screen, self.BASE,
                                  [(1 + i * self.otnosh) * self.width_line + self.nachalo_x, (1 + j * self.otnosh) * self.width_line + self.nachalo_y,
                                   self.width_line * (self.otnosh - 1), self.width_line * (self.otnosh - 1)])
         for start_point in self.start_point_list:
@@ -201,9 +219,11 @@ class Tablet():
         for end_point in self.end_point_draw[1]:
             pygame.draw.circle(screen, self.GREY, *end_point)
         for crack_point in self.crack_point_draw:
-            pygame.draw.rect(screen, self.BLACK, crack_point)
+            pygame.draw.rect(screen, self.BASE, crack_point)
         for point_required in self.point_required_draw:
             pygame.draw.circle(screen, self.BLACK, point_required, self.width_line//4)
+        for i in self.square_draw:
+            pygame.draw.rect(screen, i[0], i[1:5], border_radius=self.width_line // 8)
 
         if self.start == 1:
             pygame.draw.circle(screen, self.current_color, self.knot_list[0], self.width_line)
@@ -523,7 +543,7 @@ class Tablet():
                 if self.tracing_circle == 1 and 80 < self.tracing_step < 280:
                     pygame.draw.circle(screen, self.WHITE, start_tracing, (self.tracing_step - 80) // 5, width=1)
 
-    def chek(self):
+    def chek_point_required(self):
         for chek_point in self.point_required_chek:
             print(chek_point)
             print(self.knot_list)
@@ -536,6 +556,77 @@ class Tablet():
                     print('No')
                     self.flag_chek = 1
 
+    def chek_square(self):
+        mass_chek_b = [[[(1/2+i*self.otnosh)*self.width_line + self.nachalo_x, (1/2+j*self.otnosh)*self.width_line+self.nachalo_y] for j in range(self.y+1)] for i in range(self.x+1)]
+        mass_chek_chek_b = [[0 for j in range(self.y+1)] for i in
+                       range(self.x+1)]
+        mass_chek_af = []
+        print(*mass_chek_b)
+        for i in range(len(mass_chek_b)-1):
+            for j in range(len(mass_chek_b)-1):
+                if mass_chek_chek_b[i][j] == 0:
+                    print(i, j)
+                    mass_chek_af.append([mass_chek_b[i][j]])
+                    mass_chek_chek_b[i][j] = 1
+                    Tablet.chek_rec(i, j, mass_chek_af, mass_chek_b, mass_chek_chek_b, self.knot_list, self.x, self.y)
+        print(*mass_chek_af)
+        for i in mass_chek_af:
+            chek_temp = -1
+            chek_flag = 0
+            for j in i:
+                for k in self.square_point_list:
+                    if j == k[1:3] and (chek_temp != -1 and chek_temp != k[0]):
+                        chek_flag = 1
+                        break
+                if chek_flag == 1:
+                    break
+        if chek_flag == 1:
+            self.flag_chek = 1
+
+
+    def chek_rec(i, j, mass_chek_af, mass_chek_b, mass_chek_chek_b, knot_list, x, y):
+        if j + 1 < x and mass_chek_chek_b[i][j + 1] == 0 and (
+                [mass_chek_b[i + 1][j + 1], mass_chek_b[i][j + 1]] not in ([knot_list[k], knot_list[k + 1]]
+                                                                           for k in
+                                                                           range(len(knot_list) - 1)) and [
+                    mass_chek_b[i + 1][j + 1], mass_chek_b[i][j + 1]] not in (
+                [knot_list[-k], knot_list[-k - 1]] for k in range(len(knot_list) - 1))):
+            mass_chek_af[-1].append(mass_chek_b[i][j+1])
+            mass_chek_chek_b[i][j+1] = 1
+            print(*mass_chek_af, '1')
+            Tablet.chek_rec(i, j+1, mass_chek_af, mass_chek_b, mass_chek_chek_b, knot_list, x, y)
+        if i+1<y and mass_chek_chek_b[i+1][j] == 0 and (
+                [mass_chek_b[i + 1][j + 1], mass_chek_b[i+1][j]] not in ([knot_list[k], knot_list[k + 1]]
+                                                                           for k in
+                                                                           range(len(knot_list) - 1)) and [
+                    mass_chek_b[i + 1][j + 1], mass_chek_b[i+1][j]] not in (
+                [knot_list[-k], knot_list[-k - 1]] for k in range(len(knot_list) - 1))):
+            mass_chek_af[-1].append(mass_chek_b[i+1][j])
+            mass_chek_chek_b[i+1][j] = 1
+            print(*mass_chek_af, '2')
+            Tablet.chek_rec(i+1, j, mass_chek_af, mass_chek_b, mass_chek_chek_b, knot_list, x, y)
+
+
+        if j > 0 and mass_chek_chek_b[i][j - 1] == 0 and (
+                [mass_chek_b[i + 1][j], mass_chek_b[i][j]] not in ([knot_list[k], knot_list[k + 1]]
+                                                                           for k in
+                                                                           range(len(knot_list) - 1)) and [
+                    mass_chek_b[i + 1][j], mass_chek_b[i][j]] not in (
+                [knot_list[-k], knot_list[-k - 1]] for k in range(len(knot_list) - 1))):
+            mass_chek_af[-1].append(mass_chek_b[i][j-1])
+            mass_chek_chek_b[i][j-1] = 1
+            print(*mass_chek_af, '3')
+            Tablet.chek_rec(i, j-1, mass_chek_af, mass_chek_b, mass_chek_chek_b, knot_list, x, y)
+        if i>0 and mass_chek_chek_b[i-1][j] == 0 and (
+                [mass_chek_b[i][j + 1], mass_chek_b[i][j]] not in ([knot_list[k], knot_list[k + 1]]
+                                                                           for k in
+                                                                           range(len(knot_list) - 1)) and [
+                    mass_chek_b[i][j + 1], mass_chek_b[i][j]] not in (
+                [knot_list[-k], knot_list[-k - 1]] for k in range(len(knot_list) - 1))):
+            mass_chek_af[-1].append(mass_chek_b[i-1][j])
+            mass_chek_chek_b[i-1][j] = 1
+            print(*mass_chek_af, '4')
+            Tablet.chek_rec(i-1, j, mass_chek_af, mass_chek_b, mass_chek_chek_b, knot_list, x, y)
 
 
 
