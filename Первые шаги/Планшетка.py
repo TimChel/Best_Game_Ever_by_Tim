@@ -47,10 +47,10 @@ class Tablet():
         self.start = 0
         self.width_line = 20
         self.start_radius = self.width_line
-        self.nachalo_x = 100
-        self.nachalo_y = 100
         self.x, self.y = x, y
         self.otnosh = 4
+        self.nachalo_x = pygame.display.Info().current_w//2 - (x*self.otnosh*self.width_line + self.otnosh)//2
+        self.nachalo_y = pygame.display.Info().current_h//2 - (y*self.otnosh*self.width_line + self.otnosh)//2
         self.vert_boarder = (1 + self.y * self.otnosh) * self.width_line
         self.hor_boarder = (1 + self.x * self.otnosh) * self.width_line
         self.flag_chek = 0
@@ -233,7 +233,9 @@ class Tablet():
 
 
     def update(self, mouse_pos):
-        screen.fill(self.BASE)
+        pygame.draw.rect(screen, self.BASE,
+                         [self.nachalo_x - 2*self.width_line, self.nachalo_y -2*self.width_line, self.hor_boarder + 4*self.width_line, self.vert_boarder+ 4*self.width_line],
+                         border_radius=self.width_line // 2)
         pygame.draw.rect(screen, self.SECOND_BASE, [self.nachalo_x, self.nachalo_y, self.hor_boarder, self.vert_boarder], border_radius=self.width_line // 2)
         for i in range(self.x):
             for j in range(self.y):
