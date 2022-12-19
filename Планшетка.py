@@ -3,19 +3,19 @@ import pygame
 class Tablet():
     def __init__(self, FPS, BASE, PATH, SECOND_BASE, PATH_MAX, x, y, start_list, end_list, crack_list, point_required_list, square_list, star_list):
         pygame.mixer.init()
-        self.panel_path_complete = pygame.mixer.Sound("panel_path_complete-fix.ogg")
+        self.panel_path_complete = pygame.mixer.Sound("Первые шаги/panel_path_complete-fix.ogg")
         self.panel_path_complete.set_volume(0.5)
-        self.panel_start_tracing = pygame.mixer.Sound("panel_start_tracing-fix.ogg")
+        self.panel_start_tracing = pygame.mixer.Sound("Первые шаги/panel_start_tracing-fix.ogg")
         self.panel_start_tracing.set_volume(0.5)
-        self.panel_success2 = pygame.mixer.Sound("panel_success2-fix.ogg")
+        self.panel_success2 = pygame.mixer.Sound("Первые шаги/panel_success2-fix.ogg")
         self.panel_success2.set_volume(0.5)
-        self.panel_abort_tracing = pygame.mixer.Sound("panel_abort_tracing-fix.ogg")
+        self.panel_abort_tracing = pygame.mixer.Sound("Первые шаги/panel_abort_tracing-fix.ogg")
         self.panel_abort_tracing.set_volume(0.5)
-        self.panel_abort_finish_tracing = pygame.mixer.Sound("panel_abort_finish_tracing-fix_1.ogg")
+        self.panel_abort_finish_tracing = pygame.mixer.Sound("Первые шаги/panel_abort_finish_tracing-fix_1.ogg")
         self.panel_abort_finish_tracing.set_volume(0.5)
-        self.panel_finish_tracing = pygame.mixer.Sound("panel_finish_tracing-fix.ogg")
+        self.panel_finish_tracing = pygame.mixer.Sound("Первые шаги/panel_finish_tracing-fix.ogg")
         self.panel_finish_tracing.set_volume(0.5)
-        self.panel_failure = pygame.mixer.Sound("panel_failure-fix.ogg")
+        self.panel_failure = pygame.mixer.Sound("Первые шаги/panel_failure-fix.ogg")
         self.panel_failure.set_volume(0.5)
         self.tracing_step = 0
         self.tracing_timer = 600
@@ -219,12 +219,19 @@ class Tablet():
                 self.flag_decline = 1
                 self.panel_path_complete.stop()
                 if self.flag_end == 1 and self.flag_chek == 0:
-                    print("Win")
                     global level
-                    if level < len(A)-1:
-
-                        level += 1
+                    if level == level_len - 1:
+                        with open("Первые шаги/Level.txt", mode="w") as f:
+                            f.seek(0)
+                            level = 0
+                            f.write(str(level))
+                    else:
+                        with open("Первые шаги/Level.txt", mode="w") as f:
+                            f.seek(0)
+                            level += 1
+                            f.write(str(level))
                     self.panel_success2.play()
+                    pygame.draw.rect(screen, self.BLACK, [0, 0, pygame.display.Info().current_w, pygame.display.Info().current_h])
                 elif self.flag_end == 0:
                     self.panel_abort_tracing.play()
                 elif self.flag_end == 1 and self.flag_chek == 1:
@@ -591,12 +598,10 @@ class Tablet():
         mass_chek_af = []
         for i in range(len(mass_chek_b)-1):
             for j in range(len(mass_chek_b)-1):
-                print(mass_chek_b[i][j], 'sgd')
                 if mass_chek_chek_b[i][j] == 0:
                     mass_chek_af.append([mass_chek_b[i][j]])
                     mass_chek_chek_b[i][j] = 1
                     Tablet.chek_rec(i, j, mass_chek_af, mass_chek_b, mass_chek_chek_b, self.knot_list, self.x, self.y)
-        print(mass_chek_af)
         for i in mass_chek_af:
             chek_star_temp = dict()
             for k in self.star_point_list:
@@ -897,9 +902,12 @@ A.append(Tablet(FPS, BASE = (145,148,145), PATH = (246,254,252), SECOND_BASE= (5
                crack_list = [], point_required_list = [], square_list = [],
                star_list = [[0, 3, 0], [0, 4, 0], [0, 4, 1], [0, 0, 3], [0, 0, 4], [0, 1, 4],
                             [1, 0, 0], [1, 0, 1], [1, 0, 2], [1, 1, 0], [1, 2, 0], [1, 2, 4], [1, 3, 4], [1, 4, 4], [1, 4, 3], [1, 4, 2]]))
-print(len(A))
+global level_len
+level_len = len(A)
 global level
-level = 0
+with open("Первые шаги/Level.txt", mode="r") as f:
+    f.seek(0)
+    level = int(f.read())
 while running:
     clock.tick(FPS)
     mouse_pos = pygame.mouse.get_pos()
