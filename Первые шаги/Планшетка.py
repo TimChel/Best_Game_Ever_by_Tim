@@ -899,7 +899,7 @@ A.append(Tablet(FPS, BASE = (145,148,145), PATH = (246,254,252), SECOND_BASE= (5
                             [1, 0, 0], [1, 0, 1], [1, 0, 2], [1, 1, 0], [1, 2, 0], [1, 2, 4], [1, 3, 4], [1, 4, 4], [1, 4, 3], [1, 4, 2]]))
 print(len(A))
 global level
-level = -1
+level = 0
 while running:
     clock.tick(FPS)
     mouse_pos = pygame.mouse.get_pos()
