@@ -1,5 +1,5 @@
 import pygame
-from Planshetka import A
+from Планшетка import A
 
 FPS = 200
 running = True

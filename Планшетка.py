@@ -221,12 +221,12 @@ class Tablet():
                 if self.flag_end == 1 and self.flag_chek == 0:
                     global level
                     if level == level_len - 1:
-                        with open("Первые шаги/Level.txt", mode="w") as f:
+                        with open("Level.txt", mode="w") as f:
                             f.seek(0)
                             level = 0
                             f.write(str(level))
                     else:
-                        with open("Первые шаги/Level.txt", mode="w") as f:
+                        with open("Level.txt", mode="w") as f:
                             f.seek(0)
                             level += 1
                             f.write(str(level))
@@ -905,7 +905,7 @@ A.append(Tablet(FPS, BASE = (145,148,145), PATH = (246,254,252), SECOND_BASE= (5
 global level_len
 level_len = len(A)
 global level
-with open("Первые шаги/Level.txt", mode="r") as f:
+with open("Level.txt", mode="r") as f:
     f.seek(0)
     level = int(f.read())
 while running:
